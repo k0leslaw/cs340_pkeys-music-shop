@@ -1,10 +1,10 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 const PORT = process.env.BACKEND_PORT;
 
 /**
  * Citation for the following code:
  * Date 11/05/2025
- * Copied from Exploration - Web Application Technology:
+ * Adapted from Exploration - Web Application Technology:
  * https://canvas.oregonstate.edu/courses/2017561/pages/exploration-web-application-technology-2?module_item_id=25645131
  */
 
@@ -26,26 +26,46 @@ app.use(express.json()); // this is needed for post requests
 // ########################################
 // ########## ROUTE HANDLERS
 
-// READ ROUTES
-app.get('/bsg-people', async (req, res) => {
-    try {
-        // Create and execute our queries
-        // In query1, we use a JOIN clause to display the names of the homeworlds
-        const query1 = `SELECT bsg_people.id, bsg_people.fname, bsg_people.lname, \
-            bsg_planets.name AS 'homeworld', bsg_people.age FROM bsg_people \
-            LEFT JOIN bsg_planets ON bsg_people.homeworld = bsg_planets.id;`;
-        const query2 = 'SELECT * FROM bsg_planets;';
-        const [people] = await db.query(query1);
-        const [homeworlds] = await db.query(query2);
-    
-        res.status(200).json({ people, homeworlds });  // Send the results to the frontend
+// test route to check connection (http://classwork.engr.oregonstate.edu:BACKEND_PORT/test-db)
+app.get('/test-db', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT NOW() AS currentTime;');
+    res.json(rows);
+  } catch (err) {
+    console.error('Database connection failed:', err);
+    res.status(500).send('Database connection failed.');
+  }
+});
 
-    } catch (error) {
-        console.error("Error executing queries:", error);
-        // Send a generic error message to the browser
-        res.status(500).send("An error occurred while executing the database queries.");
-    }
-    
+// READ ROUTES
+app.get('/api/instruments', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM Instruments;');
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching instruments:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get('/api/customers', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM Customers;');
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get('/api/rental-orders', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM RentalOrders;');
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching rental orders:", error);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // ########################################

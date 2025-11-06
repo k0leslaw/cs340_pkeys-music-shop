@@ -1,0 +1,53 @@
+table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.table-data-row:hover, button, select, .delete-additional-row-button {
+    cursor: pointer;
+}
+
+.page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ddd;
+}
+
+.table-header-left {
+    display: flex;
+}
+
+.order-type-dropdown {
+    background-color: #f2f2f2;
+    height: 1.5rem;
+    width: 5rem;
+    text-align: center;
+    align-self: center;
+    margin: 0px 0px 0px 15px;
+}
+
+.new-row-button, .submit-button {
+    background-color: #f2f2f2;
+    border: 1px solid black;
+    padding: 0.5em 1em;
+    text-align: center;
+    align-self: center;
+    margin: 0px 15px 0px 0px;
+}
+
+.submit-button {
+    margin: 10px 5px 0px 5px;
+}
+
+select {
+    text-align: center;
+}
