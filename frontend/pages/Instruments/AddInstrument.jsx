@@ -11,7 +11,7 @@ function AddInstrument () {
     const addAdditionalInstrumentRow = () => {
         // Add another table row to input instrument
         // Allows multiple separate instruments to be added at once
-        const newRow = { id: Date.now() };
+        const newRow = { id: Date.now() }; 
         setRows(prevRows => [...prevRows, newRow]);
     }
 
