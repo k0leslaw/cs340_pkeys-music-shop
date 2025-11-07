@@ -1,5 +1,6 @@
 require('dotenv').config();
-const PORT = process.env.FRONTEND_PORT;
+const PORT = process.env.VITE_FRONTEND_PORT;
+console.log(PORT);
 
 /**
  * Citation for the following code:

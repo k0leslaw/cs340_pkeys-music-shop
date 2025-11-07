@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '../.env' });
-const PORT = process.env.BACKEND_PORT;
+const PORT = process.env.VITE_BACKEND_PORT;
 
 /**
  * Citation for the following code:
