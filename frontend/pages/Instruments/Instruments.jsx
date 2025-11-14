@@ -8,6 +8,8 @@ import InstrumentTableRow from "../../components/Instruments/InstrumentTableRow"
 function Instruments ({ backendURL }) {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
+    const [rentalOrders, setRentalOrders] = useState([]);
+    const [rentedItems, setRentedItems] = useState([]);
 
     const addInstrument = () => {
         navigate('/add-instrument')
@@ -26,14 +28,44 @@ function Instruments ({ backendURL }) {
         }
     }
 
+    const getRentalOrders = async () => {
+        try {
+            const response = await fetch(`${backendURL}/api/rental-orders`);
+            if (!response.ok) {
+                throw new Error(`Error status: ${response.status}`);
+            }
+            const data = await response.json();
+            setRentalOrders(data);
+        } catch (err) {
+            console.error("Error fetching rental orders:", err);
+        }
+    }
+
+    const getRentedItems = async () => {
+        try {
+            const response = await fetch(`${backendURL}/api/rented-items`);
+            if (!response.ok) {
+                throw new Error(`Error status: ${response.status}`);
+            }
+            const data = await response.json();
+            setRentedItems(data);
+        } catch (err) {
+            console.error("Error fetching rented items:", err);
+        }
+    }
+
     useEffect(() => {
         getInstruments();
-    }, [backendURL])
+        getRentalOrders();
+        getRentedItems();
+    }, [])
 
     return (
         <div className="page">
             <div className='table-header'>
-                <h1>Instruments</h1>
+                <div className='table-header-left'>
+                    <h1>Instruments</h1>
+                </div>
                 <button className="new-row-button" onClick={addInstrument}><CgAdd /> New Instrument</button>
             </div>
             <table>
@@ -45,10 +77,12 @@ function Instruments ({ backendURL }) {
                         <th>Model Name</th>
                         <th>Price/Week</th>
                         <th>Currently Rented</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row) => <InstrumentTableRow key={row.instrumentId} Instrument={row}/>)}
+                    {rows.map((row) => <InstrumentTableRow key={row.instrumentId} Instrument={row} rentalOrders={rentalOrders} rentedItems={rentedItems}/>)}
                 </tbody>
             </table>
         </div>

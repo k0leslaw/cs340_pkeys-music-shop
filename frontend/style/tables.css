@@ -5,7 +5,12 @@ table {
     text-align: center;
 }
 
-.table-data-row:hover, button, select, .delete-additional-row-button {
+h5 {
+    align-self: center;
+    margin: 8px 0px 0px 15px;
+}
+
+.add-button, .edit-button, .delete-button, button, select, .delete-additional-row-button {
     cursor: pointer;
 }
 

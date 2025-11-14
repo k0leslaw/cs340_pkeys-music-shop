@@ -18,8 +18,8 @@ function EditInstrument ({ backendURL }) {
     }
 
     const handleDelete = () => {
-        if (window.confirm('This cannot be undone. Press OK to confirm deleting this order.')) {
-            navigate('/');
+        if (window.confirm('This cannot be undone. Press OK to confirm deleting this instrument.')) {
+            navigate('/instruments');
         } 
     }
 
@@ -37,7 +37,6 @@ function EditInstrument ({ backendURL }) {
                         <th>Brand</th>
                         <th>Model Name</th>
                         <th>Price/Week</th>
-                        <th>Currently Rented</th>
                     </tr>
                 </thead>
                 <tbody>

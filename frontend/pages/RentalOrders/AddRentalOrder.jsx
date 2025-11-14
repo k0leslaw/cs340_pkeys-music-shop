@@ -4,7 +4,7 @@ import AddRentalOrderTableRow from '../../components/RentalOrders/AddRentalOrder
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-function AddRentalOrder () {
+function AddRentalOrder ({ backendURL }) {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
 
@@ -38,8 +38,7 @@ function AddRentalOrder () {
             <table>
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Customer</th>
                         <th>Instrument</th>
                         <th>Start Date</th>
                         <th>Return Date</th>
@@ -50,7 +49,10 @@ function AddRentalOrder () {
                 </thead>
                 <tbody>
                     {rows.map((row) => (
-                        <AddRentalOrderTableRow key={row.id} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
+                        <AddRentalOrderTableRow 
+                            key={row.id} 
+                            handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} 
+                            backendURL={backendURL} />
                     ))}
                 </tbody>
             </table>

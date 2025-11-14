@@ -1,14 +1,13 @@
 import '../../style/tables.css';
 import EditRentalOrderTableRow from '../../components/RentalOrders/EditRentalOrderTableRow';
 
-import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
 function EditRentalOrder ({ backendURL }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { RentalOrder } = location.state || {};
+    const { RentalOrder, RentedItems, customers, instruments } = location.state || {};
 
     const handleCancel = () => {
         navigate('/');
@@ -34,8 +33,7 @@ function EditRentalOrder ({ backendURL }) {
                 <thead>
                     <tr>
                         <th>Rental ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Customer</th>
                         <th>Instrument</th>
                         <th>Start Date</th>
                         <th>Return Date</th>
@@ -44,7 +42,12 @@ function EditRentalOrder ({ backendURL }) {
                     </tr>
                 </thead>
                 <tbody>
-                    <EditRentalOrderTableRow RentalOrder={RentalOrder} />
+                    <EditRentalOrderTableRow 
+                        RentalOrder={RentalOrder} 
+                        RentedItems={RentedItems} 
+                        customers={customers} 
+                        instruments={instruments} 
+                    />
                 </tbody>
             </table>
             <button className='submit-button' onClick={handleDelete}>Delete</button>

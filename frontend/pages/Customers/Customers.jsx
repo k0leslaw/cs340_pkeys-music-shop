@@ -36,6 +36,7 @@ function Customers ({ backendURL }) {
             <div className='table-header'>
                 <div className="table-header-left">
                     <h1>Customers</h1>
+                    
                 </div>
                 <button className="new-row-button" onClick={onNewCustomerClick}><CgAdd /> New Customer</button>
             </div>
@@ -46,6 +47,8 @@ function Customers ({ backendURL }) {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>

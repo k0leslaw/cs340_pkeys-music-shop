@@ -58,12 +58,35 @@ app.get('/api/customers', async (req, res) => {
   }
 });
 
+app.get("/api/customers/:customerId", async (req, res) => {
+  try {
+    const { customerId } = req.params;
+    const [rows] = await db.query("SELECT firstName, lastName FROM Customers WHERE customerId = ?;",
+      [customerId]
+    );
+    res.json(rows[0]);
+  } catch (error) {
+    console.error("Error fetching customer by Id:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 app.get('/api/rental-orders', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM RentalOrders;');
     res.json(rows);
   } catch (error) {
     console.error("Error fetching rental orders:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get('/api/rented-items', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM RentedItems;');
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching rented items:", error);
     res.status(500).json({ error: "Database error" });
   }
 });

@@ -18,8 +18,8 @@ function EditCustomer ({ backendURL }) {
     }
 
     const handleDelete = () => {
-        if (window.confirm('This cannot be undone. Press OK to confirm deleting this order.')) {
-            navigate('/');
+        if (window.confirm('This cannot be undone. Press OK to confirm deleting this customer.')) {
+            navigate('/customers');
         } 
     }
 

@@ -5,22 +5,22 @@ function EditCustomerTableRow ({ Customer }) {
             <td>
                 <input 
                 type="text"
-                value={Customer.firstName}/>
+                defaultValue={Customer.firstName}/>
             </td>
             <td>
                 <input 
                 type="text"
-                value={Customer.lastName}/>
+                defaultValue={Customer.lastName}/>
             </td>
             <td>
                 <input 
                 type="text"
-                value={Customer.email}/>
+                defaultValue={Customer.email}/>
             </td>
             <td>
                 <input 
                 type="text"
-                value={Customer.phone}/>
+                defaultValue={Customer.phone}/>
             </td>
         </tr>
     )

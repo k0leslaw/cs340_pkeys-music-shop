@@ -1,6 +1,6 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const PORT = process.env.VITE_FRONTEND_PORT;
-console.log(PORT);
 
 /**
  * Citation for the following code:
@@ -13,7 +13,6 @@ console.log(PORT);
 // ########## SETUP
 
 const express = require('express');
-const path = require('path');
 const app = express();
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -22,8 +21,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Handles any requests that don't match the ones above to return the React app
 // A request to '/nonExist' will redirect to the index.html where react router takes over at '/'
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // ########################################
