@@ -1,46 +1,46 @@
-import '../../style/tables.css';
-import EditInstrumentTableRow from '../../components/Instruments/EditInstrumentTableRow';
+import '../../tables.css';
+import EditCustomerTableRow from '../../components/Customers/EditCustomerTableRow';
 
 import { useNavigate, useLocation } from "react-router-dom";
 
-function EditInstrument ({ backendURL }) {
+function EditCustomer ({ backendURL }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { Instrument } = location.state || {};
+    const { Customer } = location.state || {};
 
     const handleCancel = () => {
-        navigate('/instruments');
+        navigate('/customers');
     }
 
     const handleSubmit = () => {
-        navigate('/instruments');
+        navigate('/customers');
     }
 
     const handleDelete = () => {
-        if (window.confirm('This cannot be undone. Press OK to confirm deleting this instrument.')) {
-            navigate('/instruments');
+        if (window.confirm('This cannot be undone. Press OK to confirm deleting this customer.')) {
+            navigate('/customers');
         } 
     }
 
     return (
         <div className="page">
             <div className='table-header'>
-                <h1>Edit Instrument</h1>
+                <h1>Edit Customer</h1>
                 <button className="new-row-button" onClick={handleCancel}>Cancel</button>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Instrument ID</th>
-                        <th>Type</th>
-                        <th>Brand</th>
-                        <th>Model Name</th>
-                        <th>Price/Week</th>
+                        <th>Customer ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <EditInstrumentTableRow Instrument={Instrument} />
+                    <EditCustomerTableRow Customer={Customer} />
                 </tbody>
             </table>
             <button className='submit-button' onClick={handleDelete}>Delete</button>
@@ -49,4 +49,4 @@ function EditInstrument ({ backendURL }) {
     )
 }
 
-export default EditInstrument;
+export default EditCustomer;

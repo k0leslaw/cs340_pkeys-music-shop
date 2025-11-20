@@ -2,7 +2,7 @@
 import { CgPen, CgTrash } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
 
-import '../../style/tables.css';
+import '../../tables.css';
 
 function InstrumentTableRow ({ Instrument, rentalOrders, rentedItems }) {
     const navigate = useNavigate();

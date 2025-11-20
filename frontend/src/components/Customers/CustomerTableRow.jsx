@@ -2,7 +2,7 @@
 import { CgPen, CgTrash } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
 
-import '../../style/tables.css';
+import '../../tables.css';
 
 function CustomerTableRow ({ Customer }) {
     const navigate = useNavigate();

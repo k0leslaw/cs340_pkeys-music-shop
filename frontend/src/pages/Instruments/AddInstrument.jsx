@@ -1,4 +1,4 @@
-import '../../style/tables.css';
+import '../../tables.css';
 import AddInstrumentTableRow from '../../components/Instruments/AddInstrumentTableRow';
 
 import { useNavigate } from "react-router-dom";

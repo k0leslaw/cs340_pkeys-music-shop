@@ -3,7 +3,7 @@ import { CgAdd } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import '../../style/tables.css';
+import '../../tables.css';
 import RentalTableRow from "../../components/RentalOrders/RentalTableRow";
 
 function RentalOrders ({ backendURL }) {
@@ -27,6 +27,27 @@ function RentalOrders ({ backendURL }) {
     // navigate to new order page
     const onNewOrderClick = () => {
         navigate("/add-rental-order");
+    }
+
+    const resetSampleData = async () => {
+        if (window.confirm('Press OK to confirm resetting the database.\nThis cannot be undone.')){
+            try {
+            const response = await fetch(`${backendURL}/api/reset-database`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) {
+                throw new Error(`Error status: ${response.status}`);
+            }
+            // update the table rows
+            await getRentalOrders();
+            await getCustomers();
+            await getInstruments();
+            await getRentedItems();
+        } catch (err) {
+            console.error("Error resetting sample data", err);
+        }
+        }
     }
 
     const getRentalOrders = async () => {
@@ -121,7 +142,7 @@ function RentalOrders ({ backendURL }) {
                         <th>Rental Start</th>
                         <th>Due Date</th>
                         <th>Customer</th>
-                        <th>Instrument</th>
+                        <th>Instruments</th>
                         <th>Subtotal</th>
                         <th>Order Status</th>
                         <th>Edit</th>
@@ -140,11 +161,17 @@ function RentalOrders ({ backendURL }) {
                                 customers={customers}
                                 instrumentText={instrumentText}
                                 instruments={instruments}
+                                getRentalOrders={getRentalOrders}
                             />
                         );
                     })}
                 </tbody>
             </table>
+            <div>
+                <p>NOTE ON CURRENT DRAFT FUNCTIONALITY:</p>
+                <p>delete rows with the trash icon, then reset full database with button below</p>
+                <button onClick={resetSampleData}>RESET SAMPLE DATA</button>
+            </div>
         </div>
     )
 }

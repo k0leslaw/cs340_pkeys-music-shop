@@ -11,18 +11,18 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Pages
-import RentalOrders from '../pages/RentalOrders/RentalOrders';
-import Instruments from '../pages/Instruments/Instruments';
-import Customers from '../pages/Customers/Customers';
-import AddRentalOrder from '../pages/RentalOrders/AddRentalOrder';
-import AddInstrument from '../pages/Instruments/AddInstrument';
-import AddCustomer from '../pages/Customers/AddCustomer';
-import EditRentalOrder from '../pages/RentalOrders/EditRentalOrder';
-import EditCustomer from '../pages/Customers/EditCustomer';
-import EditInstrument from '../pages/Instruments/EditInstrument';
+import RentalOrders from './pages/RentalOrders/RentalOrders';
+import Instruments from './pages/Instruments/Instruments';
+import Customers from './pages/Customers/Customers';
+import AddRentalOrder from './pages/RentalOrders/AddRentalOrder';
+import AddInstrument from './pages/Instruments/AddInstrument';
+import AddCustomer from './pages/Customers/AddCustomer';
+import EditRentalOrder from './pages/RentalOrders/EditRentalOrder';
+import EditCustomer from './pages/Customers/EditCustomer';
+import EditInstrument from './pages/Instruments/EditInstrument';
 
 // Components
-import Navigation from '../components/Navigation';
+import Navigation from './components/Navigation';
 
 // Define the backend port and URL for API requests
 const backendPort = PORT;  // Use the port you assigned to the backend server, this would normally go in a .env file

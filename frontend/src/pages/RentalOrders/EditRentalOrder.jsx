@@ -1,4 +1,4 @@
-import '../../style/tables.css';
+import '../../tables.css';
 import EditRentalOrderTableRow from '../../components/RentalOrders/EditRentalOrderTableRow';
 
 import { useNavigate, useLocation } from "react-router-dom";

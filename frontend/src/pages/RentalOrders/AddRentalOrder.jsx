@@ -1,15 +1,14 @@
-import '../../style/tables.css';
-import AddCustomerTableRow from '../../components/Customers/AddCustomerTableRow.jsx';
+import '../../tables.css';
+import AddRentalOrderTableRow from '../../components/RentalOrders/AddRentalOrderTableRow';
 
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-function AddCustomer () {
+function AddRentalOrder ({ backendURL }) {
     const navigate = useNavigate();
-
     const [rows, setRows] = useState([]);
 
-    const addAdditionalCustomerRow = () => {
+    const addAdditionalOrderRow = () => {
         // Add another table row to input rental order
         // Allows multiple separate rental orders to be added at once
         const newRow = { id: Date.now() };
@@ -21,34 +20,39 @@ function AddCustomer () {
     }
 
     const handleCancel = () => {
-        if (window.confirm('Press OK to confirm cancelling ALL new customers currently on the screen. This cannot be undone.')) {
-            navigate('/customers');
+        if (window.confirm('Press OK to confirm cancelling ALL new rental orders currently on the screen. This cannot be undone.')) {
+            navigate('/');
         } 
     }
 
     const handleSubmit = () => {
-        navigate('/customers');
+        navigate('/');
     }
 
     return (
         <div className="page">
             <div className='table-header'>
-                <h1>Create New Customer</h1>
-                <button className="new-row-button" onClick={addAdditionalCustomerRow}>Add additional customer</button>
+                <h1>Create New Rental Order</h1>
+                <button className="new-row-button" onClick={addAdditionalOrderRow}>Add additional order</button>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
+                        <th>Customer</th>
+                        <th>Instrument</th>
+                        <th>Start Date</th>
+                        <th>Return Date</th>
+                        <th>Subtotal</th>
+                        <th>Order Status</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {rows.map((row) => (
-                        <AddCustomerTableRow key={row.id} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
+                        <AddRentalOrderTableRow 
+                            key={row.id} 
+                            handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} 
+                            backendURL={backendURL} />
                     ))}
                 </tbody>
             </table>
@@ -58,4 +62,4 @@ function AddCustomer () {
     )
 }
 
-export default AddCustomer;
+export default AddRentalOrder;

@@ -3,7 +3,7 @@ import { CgAdd } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import '../../style/tables.css';
+import '../../tables.css';
 import CustomerTableRow from "../../components/Customers/CustomerTableRow";
 
 function Customers ({ backendURL }) {

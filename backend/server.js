@@ -1,4 +1,5 @@
 require('dotenv').config({ path: '../.env' });
+
 const PORT = process.env.VITE_BACKEND_PORT;
 
 /**
@@ -26,14 +27,14 @@ app.use(express.json()); // this is needed for post requests
 // ########################################
 // ########## ROUTE HANDLERS
 
-// test route to check connection (http://classwork.engr.oregonstate.edu:BACKEND_PORT/test-db)
-app.get('/test-db', async (req, res) => {
+// CREATE ROUTES
+app.post('/api/reset-database', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT NOW() AS currentTime;');
-    res.json(rows);
+    await db.query("CALL sp_load_rentaldb()");
+    res.json({ message: "Database has been reset" });
   } catch (err) {
-    console.error('Database connection failed:', err);
-    res.status(500).send('Database connection failed.');
+    console.error("Error resetting database:", err);
+    res.status(500).json({ error: "Error resetting database" });
   }
 });
 
@@ -88,6 +89,18 @@ app.get('/api/rented-items', async (req, res) => {
   } catch (error) {
     console.error("Error fetching rented items:", error);
     res.status(500).json({ error: "Database error" });
+  }
+});
+
+// DELETE ROUTES
+app.delete('/api/delete-rental-order/:id', async (req, res) => {
+  try {
+    const rentalOrderId = req.params.id;
+    await db.query(`CALL DeleteRentalOrder(${rentalOrderId})`);
+    res.status(200).send({ message: "Rental order deleted" });
+  } catch (err) {
+    console.error("Error deleting rental order:", err);
+    res.status(500).send({ error: "Error deleting rental order" });
   }
 });
 

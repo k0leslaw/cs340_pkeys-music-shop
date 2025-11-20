@@ -2,9 +2,9 @@
 import { CgPen, CgTrash } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
-import '../../style/tables.css';
+import '../../tables.css';
 
-function RentalTableRow ({ RentalOrder, RentedItems, customers, instruments, instrumentText }) {
+function RentalTableRow ({ backendURL, RentalOrder, RentedItems, customers, instruments, instrumentText, getRentalOrders }) {
     const navigate = useNavigate();
 
     const { rentalOrderId, customerId, rentalStart, dueDate, orderStatus } = RentalOrder;
@@ -16,8 +16,20 @@ function RentalTableRow ({ RentalOrder, RentedItems, customers, instruments, ins
         navigate('/edit-rental', { state: { RentalOrder, RentedItems, customers, instruments } });
     };
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = async () => {
         if (window.confirm('This cannot be undone. Press OK to confirm deleting this order.')) {
+            try {
+                const response = await fetch(`${backendURL}/api/delete-rental-order/${rentalOrderId}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    throw new Error(`Error status: ${response.status}`);
+                }
+
+                await getRentalOrders();
+            } catch (err) {
+                console.error("Error deleting rental order:", err);
+            }
             navigate('/');
         } 
     }
