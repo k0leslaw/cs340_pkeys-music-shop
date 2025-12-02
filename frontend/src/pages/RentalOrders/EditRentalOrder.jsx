@@ -17,9 +17,20 @@ function EditRentalOrder ({ backendURL }) {
         navigate('/');
     }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (window.confirm('This cannot be undone. Press OK to confirm deleting this order.')) {
-            navigate('/');
+            try {
+                const response = await fetch(`${backendURL}/api/delete-rental-order/${RentalOrder.rentalOrderId}`, {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                if (!response.ok) {
+                    throw new Error(`Error status: ${response.status}`);
+                }
+                navigate('/');
+            } catch (err) {
+                console.error("Error deleting rental order", err);
+            }
         } 
     }
 

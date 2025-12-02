@@ -34,7 +34,7 @@ function App() {
 
     return (
         <>
-            <Navigation />
+            <Navigation backendURL={backendURL} />
             <Routes>
                 <Route path="/" element={<RentalOrders backendURL={backendURL}/>} />
                 <Route path="/instruments" element={<Instruments backendURL={backendURL}/>} />

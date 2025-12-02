@@ -82,7 +82,7 @@ function Instruments ({ backendURL }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row) => <InstrumentTableRow key={row.instrumentId} Instrument={row} rentalOrders={rentalOrders} rentedItems={rentedItems}/>)}
+                    {rows.map((row) => <InstrumentTableRow key={row.instrumentId} backendURL={backendURL} Instrument={row} getInstruments={getInstruments} />)}
                 </tbody>
             </table>
         </div>

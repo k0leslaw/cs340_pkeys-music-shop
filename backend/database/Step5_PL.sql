@@ -90,10 +90,12 @@ END //
 CREATE PROCEDURE SelectAllInstruments()
 BEGIN
 
-SELECT Instruments.instrumentId, Instruments.type, Instruments.brand, Instruments.modelName, Instruments.pricePerWeek, RentalOrders.orderStatus AS "Currently Rented"
+SELECT Instruments.instrumentId, Instruments.type, Instruments.brand, Instruments.modelName, Instruments.pricePerWeek, 
+    IF(MAX(CASE WHEN RentalOrders.orderStatus IN ("ACTIVE", "LATE") THEN 1 ELSE 0 END) 1, "YES", "NO") AS "Currently Rented"
 FROM Instruments
 LEFT JOIN RentedItems ON Instruments.instrumentId = RentedItems.instrumentId
 LEFT JOIN RentalOrders ON RentedItems.rentalOrderId = RentalOrders.rentalOrderId
+GROUP BY Instruments.instrumentId, Instruments.type, Instruments.brand, Instruments.modelName, Instruments.pricePerWeek
 ORDER BY Instruments.instrumentId;
 
 END //
@@ -148,7 +150,6 @@ END //
 
 
 
-
 -- Delete instrument from database
 CREATE PROCEDURE DeleteInstrument(
     IN p_instrumentId INT
@@ -166,15 +167,26 @@ END //
 -- -------------------------------------------------------
 
 -- Select all rental orders
+DROP PROCEDURE SelectAllRentalOrders
+
 CREATE PROCEDURE SelectAllRentalOrders()
 BEGIN
-
-SELECT RentalOrders.rentalOrderId, RentalOrders.rentalStart, RentalOrders.dueDate, RentalOrders.customerId, Instruments.type, Instruments.pricePerWeek, RentalOrders.orderStatus
-FROM RentalOrders
-JOIN RentedItems ON RentalOrders.rentalOrderId = RentedItems.rentalOrderId
-JOIN Instruments ON RentedItems.instrumentId = Instruments.instrumentId
-ORDER BY Instruments.instrumentId;
-
+    SELECT
+        RentalOrders.rentalOrderId,
+        RentalOrders.rentalStart,
+        RentalOrders.dueDate,
+        RentalOrders.customerId,
+        RentalOrders.orderStatus,
+        COUNT(RentedItems.instrumentId) AS itemCount
+    FROM RentalOrders
+    LEFT JOIN RentedItems ON RentedItems.rentalOrderId = RentalOrders.rentalOrderId
+    GROUP BY 
+        RentalOrders.rentalOrderId,
+        RentalOrders.rentalStart,
+        RentalOrders.dueDate,
+        RentalOrders.customerId,
+        RentalOrders.orderStatus
+    ORDER BY RentalOrders.rentalOrderId;
 END //
 
 

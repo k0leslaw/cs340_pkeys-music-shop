@@ -29,27 +29,6 @@ function RentalOrders ({ backendURL }) {
         navigate("/add-rental-order");
     }
 
-    const resetSampleData = async () => {
-        if (window.confirm('Press OK to confirm resetting the database.\nThis cannot be undone.')){
-            try {
-            const response = await fetch(`${backendURL}/api/reset-database`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            if (!response.ok) {
-                throw new Error(`Error status: ${response.status}`);
-            }
-            // update the table rows
-            await getRentalOrders();
-            await getCustomers();
-            await getInstruments();
-            await getRentedItems();
-        } catch (err) {
-            console.error("Error resetting sample data", err);
-        }
-        }
-    }
-
     const getRentalOrders = async () => {
         try {
             const response = await fetch(`${backendURL}/api/rental-orders`);
@@ -168,9 +147,6 @@ function RentalOrders ({ backendURL }) {
                 </tbody>
             </table>
             <div>
-                <p>NOTE ON CURRENT DRAFT FUNCTIONALITY:</p>
-                <p>delete rows with the trash icon, then reset full database with button below</p>
-                <button onClick={resetSampleData}>RESET SAMPLE DATA</button>
             </div>
         </div>
     )

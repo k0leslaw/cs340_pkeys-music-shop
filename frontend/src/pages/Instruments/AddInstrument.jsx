@@ -4,15 +4,29 @@ import AddInstrumentTableRow from '../../components/Instruments/AddInstrumentTab
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 
-function AddInstrument () {
+function AddInstrument ({ backendURL }) {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
 
     const addAdditionalInstrumentRow = () => {
         // Add another table row to input instrument
         // Allows multiple separate instruments to be added at once
-        const newRow = { id: Date.now() }; 
+        const newRow = { 
+            id: Date.now(),
+            type: "Guitar",
+            brand: "",
+            modelName: "",
+            pricePerWeek: "" 
+        }; 
         setRows(prevRows => [...prevRows, newRow]);
+    }
+
+    const updateRow = (id, field, value) => {
+        setRows(prev =>
+            prev.map(row =>
+                row.id === id ? { ...row, [field]: value } : row
+            )
+        );
     }
 
     const handleDeleteAdditionalRow = (idToDelete) => {
@@ -25,7 +39,26 @@ function AddInstrument () {
         } 
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        for (let i = 0; i < rows.length; i++) {
+            try {
+                const response = await fetch(`${backendURL}/api/create-instrument`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    type: rows[i].type,
+                    brand: rows[i].brand,
+                    modelName: rows[i].modelName,
+                    pricePerWeek: rows[i].pricePerWeek
+                 })
+                });
+                if (!response.ok) {
+                    throw new Error(`Error status: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Error creating instrument", err);
+            }            
+        }
         navigate('/instruments');
     }
 
@@ -47,7 +80,7 @@ function AddInstrument () {
                 </thead>
                 <tbody>
                     {rows.map((row) => (
-                        <AddInstrumentTableRow key={row.id} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
+                        <AddInstrumentTableRow key={row.id} row={row} updateRow={updateRow} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
                     ))}
                 </tbody>
             </table>

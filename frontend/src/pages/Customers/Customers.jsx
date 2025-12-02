@@ -52,7 +52,7 @@ function Customers ({ backendURL }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row) => <CustomerTableRow key={row.customerId} Customer={row} />)}
+                    {rows.map((row) => <CustomerTableRow key={row.customerId} backendURL={backendURL} Customer={row} getCustomers={getCustomers}/>)}
                 </tbody>
             </table>
         </div>

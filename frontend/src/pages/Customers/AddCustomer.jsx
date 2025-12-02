@@ -4,16 +4,30 @@ import AddCustomerTableRow from '../../components/Customers/AddCustomerTableRow.
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-function AddCustomer () {
+function AddCustomer ({ backendURL }) {
     const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
 
     const addAdditionalCustomerRow = () => {
-        // Add another table row to input rental order
-        // Allows multiple separate rental orders to be added at once
-        const newRow = { id: Date.now() };
+        // Add another table row to input customer
+        // Allows multiple separate customers to be added at once
+        const newRow = { 
+            id: Date.now(),
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "" 
+        }; 
         setRows(prevRows => [...prevRows, newRow]);
+    }
+
+    const updateRow = (id, field, value) => {
+        setRows(prev =>
+            prev.map(row =>
+                row.id === id ? { ...row, [field]: value } : row
+            )
+        );
     }
 
     const handleDeleteAdditionalRow = (idToDelete) => {
@@ -26,7 +40,26 @@ function AddCustomer () {
         } 
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        for (let i = 0; i < rows.length; i++) {
+            try {
+                const response = await fetch(`${backendURL}/api/create-customer`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    firstName: rows[i].firstName,
+                    lastName: rows[i].lastName,
+                    email: rows[i].email,
+                    phone: rows[i].phone
+                 })
+                });
+                if (!response.ok) {
+                    throw new Error(`Error status: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Error creating customer", err);
+            }            
+        }
         navigate('/customers');
     }
 
@@ -48,7 +81,7 @@ function AddCustomer () {
                 </thead>
                 <tbody>
                     {rows.map((row) => (
-                        <AddCustomerTableRow key={row.id} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
+                        <AddCustomerTableRow key={row.id} row={row} updateRow={updateRow} handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} />
                     ))}
                 </tbody>
             </table>
