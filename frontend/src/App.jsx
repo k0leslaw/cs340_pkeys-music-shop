@@ -22,7 +22,7 @@ import EditCustomer from './pages/Customers/EditCustomer';
 import EditInstrument from './pages/Instruments/EditInstrument';
 
 // Components
-import Navigation from './components/Navigation';
+import Navigation from './components/Navigation/Navigation';
 
 // Define the backend port and URL for API requests
 const backendPort = PORT;  // Use the port you assigned to the backend server, this would normally go in a .env file

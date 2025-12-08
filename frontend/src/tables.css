@@ -1,8 +1,34 @@
 table {
     width: 100%;
     margin: 0 auto;
-    border-collapse: collapse;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 6px #AEB6B8;
     text-align: center;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid #aeb6b86b;
+}
+
+th {
+    background-color: #426E6F;
+    border-color: #AEB6B8;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 1.75rem;
+    color: #1A1A1A;
 }
 
 h5 {
@@ -12,6 +38,10 @@ h5 {
 
 .add-button, .edit-button, .delete-button, button, select, .delete-additional-row-button {
     cursor: pointer;
+}
+
+.edit-button:hover, .delete-button:hover, .delete-additional-row-button:hover, .add-button:hover {
+    color: #346F6F;
 }
 
 .page {
@@ -24,35 +54,52 @@ h5 {
 .table-header {
     display: flex;
     justify-content: space-between;
-    background-color: #ddd;
+    background-color: #426e6fd9;
+    border-bottom: 1px solid #aeb6b823;
+    padding: 0 16px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
 .table-header-left {
     display: flex;
+    align-items: center;
 }
 
 .order-type-dropdown {
-    background-color: #f2f2f2;
+    background-color: #fff;
     height: 1.5rem;
     width: 5rem;
     text-align: center;
     align-self: center;
-    margin: 0px 0px 0px 15px;
 }
 
 .new-row-button, .submit-button {
-    background-color: #f2f2f2;
-    border: 1px solid black;
     padding: 0.5em 1em;
     text-align: center;
     align-self: center;
-    margin: 0px 15px 0px 0px;
 }
 
 .submit-button {
     margin: 10px 5px 0px 5px;
 }
 
-select {
+select, input {
     text-align: center;
+    margin-left: 16px;
+    background-color: #DDE9E9;
+    color: #1A1A1A;
+    border: 1px solid #AEB6B8;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #DDE9E9;
+    color: #1A1A1A;
+    border: 1px solid #2F5859;
+    border-radius: 3px;
+}
+
+button:hover {
+    background-color: #C7D9D9;
 }
