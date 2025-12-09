@@ -38,6 +38,39 @@ app.post('/api/reset-database', async (req, res) => {
   }
 });
 
+app.post('/api/create-rental-order', async (req, res) => {
+  try {
+    const { customerId, startDate, dueDate, orderStatus } = req.body;
+    if (!customerId || !startDate || !dueDate || !orderStatus) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const sql = "CALL CreateNewRentalOrder(?, ?, ?, ?)"
+    const [result] = await db.query(sql, [customerId, startDate, dueDate, orderStatus]);
+    const rentalOrderId = result[0][0].rentalOrderId;
+    res.status(201).json({ message: "Rental order created successfully", rentalOrderId });
+  } catch (err) {
+    console.error("Error creating rental order:", err);
+    res.status(500).json({ error: "Error creating rental order" });
+  }
+})
+
+app.post('/api/create-rented-item', async (req, res) => {
+  try {
+    const { rentalOrderId, instrumentId } = req.body;
+    if (!rentalOrderId || !instrumentId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const sql = "CALL CreateNewRentedItem(?, ?)"
+    await db.query(sql, [rentalOrderId, instrumentId]);
+    res.status(201).json({ message: "Rented item created successfully" });
+  } catch (err) {
+    console.error("Error creating rented item:", err);
+    res.status(500).json({ error: "Error creating rented item" });
+  }
+})
+
 app.post('/api/create-instrument', async (req, res) => {
   try {
     const { type, brand, modelName, pricePerWeek } = req.body;
@@ -129,11 +162,48 @@ app.get('/api/rented-items', async (req, res) => {
 });
 
 // UPDATE ROUTES
+app.put('/api/update-rental-order/:id', async (req, res) => {
+  try {
+    const rentalOrderId = req.params.id;
+    const newCustomer = req.body.newCustomer;
+    const newRentalStart = req.body.newRentalStart;
+    const newDueDate = req.body.newDueDate;
+    const newOrderStatus = req.body.newOrderStatus;
+    await db.query('CALL UpdateRentalOrder(?, ?, ?, ?, ?)', [rentalOrderId, newCustomer, newRentalStart, newDueDate, newOrderStatus]);
+    res.status(200).json({ message: "Rental order updated successfully" });
+  } catch (err) {
+    console.error("Error updating rental order:", err);
+    res.status(500).send({ error: "Error updating rental order"});
+  }
+})
+
+app.put('/api/update-rented-item/:rentalOrderId', async (req, res) => {
+  try {
+    const rentalOrderId = req.params.rentalOrderId;
+    const instruments = req.body.instruments; 
+
+    if (!Array.isArray(instruments)) {
+      return res.status(400).json({ error: 'Instruments must be an array' });
+    }
+
+    await db.query('CALL DeleteRentedItem(?)', [rentalOrderId]);
+
+    for (const inst of instruments) {
+      await db.query('CALL CreateNewRentedItem(?, ?)', [rentalOrderId, inst.instrumentId]);
+    }
+
+    res.status(200).json({ message: 'Rented items updated successfully' });
+  } catch (err) {
+    console.error('Error updating rented items:', err);
+    res.status(500).json({ error: 'Error updating rented items' });
+  }
+});
+
 app.put('/api/update-instrument/:id', async (req, res) => {
   try {
     const instrumentId = req.params.id;
-    const newPrice = req.body.newPrice;
-    await db.query('CALL UpdateInstrumentPrice(?, ?)', [instrumentId, newPrice]);
+    const { newType, newBrand, newModelName, newPrice } = req.body;
+    await db.query('CALL UpdateInstrument(?, ?, ?, ?, ?)', [instrumentId, newType, newBrand, newModelName, newPrice]);
     res.status(200).json({ message: "Instrument updated successfully" });
   } catch (err) {
     console.error("Error updating instrument:", err);
@@ -162,6 +232,17 @@ app.delete('/api/delete-rental-order/:id', async (req, res) => {
   } catch (err) {
     console.error("Error deleting rental order:", err);
     res.status(500).send({ error: "Error deleting rental order" });
+  }
+});
+
+app.delete('/api/delete-rented-item/:id', async (req, res) => {
+  try {
+    const rentalOrderId = req.params.id;
+    await db.query("CALL DeleteRentedItem(?)", [rentalOrderId]);
+    res.status(200).send({ message: "Rented item deleted" });
+  } catch (err) {
+    console.error("Error deleting rented item:", err);
+    res.status(500).send({ error: "Error deleting rented item" });
   }
 });
 

@@ -8,7 +8,22 @@ function EditInstrument ({ backendURL }) {
     const location = useLocation();
 
     const { Instrument } = location.state || {};
+    const [newType, setNewType] = useState(Instrument.type);
+    const [newBrand, setNewBrand] = useState(Instrument.brand);
+    const [newModelName, setNewModelName] = useState(Instrument.modelName);
     const [newPrice, setNewPrice] = useState(Instrument.pricePerWeek);
+
+    const handleTypeChange = (e) => {
+        setNewType(e.target.value);
+    }
+
+    const handleBrandChange = (e) => {
+        setNewBrand(e.target.value);
+    }
+
+    const handleModelNameChange = (e) => {
+        setNewModelName(e.target.value);
+    }
 
     const handlePriceChange = (e) => {
         setNewPrice(e.target.valueAsNumber);
@@ -23,7 +38,12 @@ function EditInstrument ({ backendURL }) {
             const response = await fetch(`${backendURL}/api/update-instrument/${Instrument.instrumentId}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({newPrice: newPrice})
+                body: JSON.stringify({
+                    newType: newType,
+                    newBrand: newBrand,
+                    newModelName: newModelName,
+                    newPrice: newPrice
+                })
             });
             if (!response.ok) {
                 throw new Error(`Error status: ${response.status}`);
@@ -72,20 +92,38 @@ function EditInstrument ({ backendURL }) {
                 </thead>
                 <tbody>
                     <tr>    
-                        <td>{Instrument.instrumentId}</td>
                         <td>
-                            {Instrument.type}
+                            {Instrument.instrumentId}
                         </td>
                         <td>
-                            {Instrument.brand}
+                            <select onChange={handleTypeChange} defaultValue={Instrument.type} value={newType}>
+                                <option>Guitar</option>
+                                <option>Trumpet</option>
+                                <option>Keyboard</option>
+                                <option>Clarinet</option>
+                                <option>Violin</option>
+                                <option>Drum Kit</option>
+                            </select>
                         </td>
                         <td>
-                            {Instrument.modelName}
+                            <input 
+                            type="text"
+                            defaultValue={Instrument.brand}
+                            value={newBrand}
+                            onChange={handleBrandChange}/>
+                        </td>
+                        <td>
+                            <input 
+                            type="text"
+                            defaultValue={Instrument.modelName}
+                            value={newModelName}
+                            onChange={handleModelNameChange}/>
                         </td>
                         <td>
                             <input 
                             type="number"
                             defaultValue={Instrument.pricePerWeek}
+                            value={newPrice}
                             min={0}
                             onChange={handlePriceChange}/>
                         </td>

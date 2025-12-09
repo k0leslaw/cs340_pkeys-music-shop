@@ -8,10 +8,25 @@ function AddRentalOrder ({ backendURL }) {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
 
+    const updateRow = (id, updatedFields) => {
+        setRows(prev =>
+            prev.map(r => r.id === id ? { ...r, ...updatedFields } : r)
+        );
+    };
+
     const addAdditionalOrderRow = () => {
         // Add another table row to input rental order
         // Allows multiple separate rental orders to be added at once
-        const newRow = { id: Date.now() };
+        const newRow = {
+            id: Date.now(),
+            customerId: "",
+            instrument: [],
+            startDate: "",
+            dueDate: "",
+            orderStatus: "ACTIVE",
+            subtotal: 0,
+            rentalOrderId: null
+        };
         setRows(prevRows => [...prevRows, newRow]);
     }
 
@@ -25,7 +40,48 @@ function AddRentalOrder ({ backendURL }) {
         } 
     }
 
-    const handleSubmit = () => {
+    const createRentalOrder = async (i) => {
+        try {
+            const response = await fetch(`${backendURL}/api/create-rental-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                customerId: rows[i].customerId,
+                startDate: rows[i].startDate,
+                dueDate: rows[i].dueDate,
+                orderStatus: rows[i].orderStatus
+                })
+            });
+            if (!response.ok) {
+                throw new Error(`Error status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            updateRow(rows[i].id, { rentalOrderId: data.rentalOrderId });
+            return data.rentalOrderId;
+        } catch (err) {
+            console.error("Error creating rental order", err);
+        }      
+    }
+
+    const createRentedItem = async (i, instrumentId, rentalOrderId) => {
+        const response = await fetch(`${backendURL}/api/create-rented-item`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                rentalOrderId,
+                instrumentId
+            })
+        });
+    }
+
+    const handleSubmit = async () => {
+        for (let i = 0; i < rows.length; i++) {
+            const rentalOrderId = await createRentalOrder(i);
+            for (let j = 0; j < rows[i].instrument.length; j++) {
+                await createRentedItem(i, parseInt(rows[i].instrument[j]), rentalOrderId);
+            }
+        }
         navigate('/');
     }
 
@@ -51,7 +107,9 @@ function AddRentalOrder ({ backendURL }) {
                     {rows.map((row) => (
                         <AddRentalOrderTableRow 
                             key={row.id} 
-                            handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)} 
+                            row={row}
+                            handleDeleteAdditionalRow={() => handleDeleteAdditionalRow(row.id)}
+                            updateRow={updateRow} 
                             backendURL={backendURL} />
                     ))}
                 </tbody>

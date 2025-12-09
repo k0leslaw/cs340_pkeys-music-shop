@@ -1,8 +1,8 @@
 /** https://react-icons.github.io/react-icons/icons/cg/ */
-import { CgTrash, CgAdd } from "react-icons/cg";
+import { CgTrash, CgAdd, CgRowFirst } from "react-icons/cg";
 import { useState, useEffect } from "react";
 
-function AddRentalOrderTableRow ({ handleDeleteAdditionalRow, backendURL }) {
+function AddRentalOrderTableRow ({ row, handleDeleteAdditionalRow, updateRow, backendURL }) {
     const [customers, setCustomers] = useState([]);
     const [instruments, setInstruments] = useState([]);
     const [selectedStartDate, setSelectedStartDate] = useState('');
@@ -53,14 +53,17 @@ function AddRentalOrderTableRow ({ handleDeleteAdditionalRow, backendURL }) {
         if (new Date(selectedReturnDate) < new Date(e.target.value)) {
             setSelectedReturnDate(e.target.value);
         }
+
+        updateRow(row.id, { startDate: e.target.value });
     }
 
     const handleSelectReturnDate = (e) => {
         setSelectedReturnDate(e.target.value);
+        updateRow(row.id, { dueDate: e.target.value });
     }
 
     const calculateSubtotal = () => {
-        if (!selectedStartDate || !selectedReturnDate) return '-';
+        if (!selectedStartDate || !selectedReturnDate) return 0;
 
         const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
         const numWeeks = Math.ceil(
@@ -80,19 +83,35 @@ function AddRentalOrderTableRow ({ handleDeleteAdditionalRow, backendURL }) {
         getInstruments();
     }, [backendURL])
 
+    useEffect(() => {
+        if (!selectedStartDate || !selectedReturnDate) return;
+
+        const subtotal = calculateSubtotal();
+        updateRow(row.id, { subtotal });
+    }, [
+        selectedStartDate,
+        selectedReturnDate,
+        orderInstruments,
+        instruments
+    ]);
+
+    useEffect(() => {
+        updateRow(row.id, { instrument: orderInstruments.map(i => i.instrumentId) });
+    }, [orderInstruments]);
+
     return (
         <tr>
             <td>
-                <select>
-                    <option>Select Customer</option>
-                    {customers.map((customer) => <option key={customer.customerId}>{customer.firstName} {customer.lastName} [ID: {customer.customerId}]</option>)}
+                <select onChange={(e) => updateRow(row.id, { customerId: e.target.value })}>
+                    <option value="">Select Customer</option>
+                    {customers.map((customer) => <option key={customer.customerId} value={customer.customerId}>{customer.firstName} {customer.lastName} [ID: {customer.customerId}]</option>)}
                 </select>
             </td>
             <td>
                 {orderInstruments.map(inst => (
                     <div key={inst.id} style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
                         <select value={inst.instrumentId} onChange={e => handleInstrumentChange(inst.id, e.target.value)}>
-                            <option>Select Instrument</option>
+                            <option value="">Select Instrument</option>
                             {instruments.map(i => <option key={i.instrumentId} value={i.instrumentId}>{i.brand} {i.modelName}</option>)}
                         </select>
                         <CgTrash className="delete-additional-row-button" onClick={() => handleDeleteInstrument(inst.id)} />
@@ -100,15 +119,14 @@ function AddRentalOrderTableRow ({ handleDeleteAdditionalRow, backendURL }) {
                 ))}
                 <CgAdd className="add-button" onClick={handleAddInstrument} />
             </td>
-            <td><input type="date" value={selectedStartDate} onChange={e => setSelectedStartDate(e.target.value)} /></td>
-            <td><input type="date" value={selectedReturnDate} min={selectedStartDate} onChange={e => setSelectedReturnDate(e.target.value)} /></td>
+            <td><input type="date" value={selectedStartDate} onChange={e => handleSelectStartDate(e)} /></td>
+            <td><input type="date" value={selectedReturnDate} min={selectedStartDate} onChange={e => handleSelectReturnDate(e)} /></td>
             <td>{calculateSubtotal()}</td>
             <td>
-                <select>
-                    <option>Open</option>
-                    <option>Active</option>
-                    <option>Late</option>
-                    <option>Complete</option>
+                <select value={row.orderStatus} onChange={(e) => updateRow(row.id, { orderStatus: e.target.value })}>
+                    <option>ACTIVE</option>
+                    <option>LATE</option>
+                    <option>COMPLETE</option>
                 </select>
             </td>
             <td className="delete-additional-row-button" onClick={handleDeleteAdditionalRow}><CgTrash /></td>

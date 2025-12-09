@@ -126,18 +126,18 @@ END //
 
 
 
-
-
-
 -- Update instrument in database
-CREATE PROCEDURE UpdateInstrumentPrice(
+CREATE PROCEDURE UpdateInstrument(
     IN p_instrumentId INT,
+    IN p_type VARCHAR(255),
+    IN p_brand VARCHAR(255),
+    IN p_modelName VARCHAR(255),
     IN p_pricePerWeek DECIMAL(10, 2)
 )
 BEGIN
 
 UPDATE Instruments
-SET pricePerWeek = p_pricePerWeek
+SET type = p_type, brand = p_brand, modelName = p_modelName, pricePerWeek = p_pricePerWeek
 WHERE instrumentId = p_instrumentId;
 
 END //
@@ -167,7 +167,6 @@ END //
 -- -------------------------------------------------------
 
 -- Select all rental orders
-DROP PROCEDURE SelectAllRentalOrders
 
 CREATE PROCEDURE SelectAllRentalOrders()
 BEGIN
@@ -196,7 +195,6 @@ END //
 
 
 
-
 -- Add a new rental order
 CREATE PROCEDURE CreateNewRentalOrder(    
     IN p_customerId INT,
@@ -210,6 +208,8 @@ BEGIN
 INSERT INTO RentalOrders (customerId, rentalStart, dueDate, orderStatus) VALUES
 (p_customerId, p_rentalStart, p_dueDate, p_orderStatus);
 
+SELECT LAST_INSERT_ID() AS rentalOrderId;
+
 END //
 
 
@@ -219,18 +219,20 @@ END //
 
 
 
-
-
+drop procedure UpdateRentalOrder
 
 -- Update rental order in database
 CREATE PROCEDURE UpdateRentalOrder(    
     IN p_rentalOrderId INT,
+    IN p_customerId INT,
+    IN p_rentalStart DATE,
+    IN p_dueDate DATE,
     IN p_orderStatus ENUM('LATE', 'ACTIVE', 'COMPLETE')
 )
 BEGIN
 
 UPDATE RentalOrders
-SET orderStatus = p_orderStatus
+SET orderStatus = p_orderStatus, customerId = p_customerId, rentalStart = p_rentalStart, dueDate = p_dueDate, orderStatus = p_orderStatus
 WHERE rentalOrderId = p_rentalOrderId;
 
 END //
@@ -270,6 +272,45 @@ BEGIN
 
 SELECT rentalOrderId, instrumentId
 FROM RentedItems;
+
+END //
+
+
+
+CREATE PROCEDURE CreateNewRentedItem(    
+    IN p_rentalOrderId INT,
+    IN p_instrumentId INT
+)
+BEGIN
+
+INSERT INTO RentedItems (rentalOrderId, instrumentId) VALUES
+(p_rentalOrderId, p_instrumentId);
+
+END //
+
+
+
+CREATE PROCEDURE UpdateRentedItem(    
+    IN p_rentalOrderId INT,
+    IN p_instrumentId INT
+)
+BEGIN
+
+UPDATE RentedItems
+SET instrumentId = p_instrumentId
+WHERE rentalOrderId = p_rentalOrderId;
+
+END //
+
+
+
+CREATE PROCEDURE DeleteRentedItem(    
+    IN p_rentalOrderId INT
+)
+BEGIN
+
+DELETE FROM RentedItems
+WHERE rentalOrderId = p_rentalOrderId;
 
 END //
 
